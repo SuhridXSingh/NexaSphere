@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, BookOpen, ExternalLink, Monitor, Brain, 
-  Cloud, Smartphone, Shield, Book, FileText, CheckCircle 
+  Cloud, Smartphone, Shield, Book, FileText, CheckCircle, Sparkles 
 } from 'lucide-react';
 import { roadmapData } from '../../data/roadmapData';
+import BookmarkButton from '../../components/common/BookmarkButton';
+import RoadmapBuilder from '../../components/roadmaps/RoadmapBuilder';
 import '../../styles/roadmaps.css';
 
 const DOMAIN_ICONS = {
@@ -16,6 +18,7 @@ const DOMAIN_ICONS = {
 };
 
 export default function RoadmapsPage({ onBack }) {
+  const [isBuilderActive, setIsBuilderActive] = useState(false);
   const [activeDomain, setActiveDomain] = useState('webdev');
   const [selectedNode, setSelectedNode] = useState(null);
   const panelRef = useRef(null);
@@ -56,6 +59,14 @@ export default function RoadmapsPage({ onBack }) {
 
   const IconComponent = DOMAIN_ICONS[activeDomain] || Monitor;
 
+  if (isBuilderActive) {
+    return (
+      <div className="roadmaps-page-container">
+        <RoadmapBuilder onBack={() => setIsBuilderActive(false)} />
+      </div>
+    );
+  }
+
   return (
     <div className="roadmaps-page-container">
       {/* Header */}
@@ -71,6 +82,23 @@ export default function RoadmapsPage({ onBack }) {
         <p className="roadmaps-subtitle">
           Step-by-step guidance, industry-vetted technologies, and premium learning materials selected by the NexaSphere team.
         </p>
+        <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
+          <button 
+            onClick={() => setIsBuilderActive(true)}
+            className="btn btn-primary flex items-center gap-2"
+            style={{ 
+              fontFamily: "'Orbitron', monospace", 
+              fontWeight: 800,
+              letterSpacing: '0.05em',
+              boxShadow: '0 0 20px rgba(230, 57, 70, 0.45)',
+              textTransform: 'uppercase',
+              fontSize: '0.85rem'
+            }}
+          >
+            <Sparkles size={16} className="text-white animate-pulse" />
+            Try Interactive Path Builder
+          </button>
+        </div>
       </div>
 
       {/* Domain Selectors */}
@@ -187,9 +215,15 @@ export default function RoadmapsPage({ onBack }) {
               onClick={() => setSelectedNode(null)} 
               className="panel-close-btn"
               aria-label="Close learning panel"
+              style={{ marginRight: '40px' }} // Shift slightly left to make room for BookmarkButton
             >
               &times;
             </button>
+
+            <BookmarkButton
+              item={{ id: `roadmap-${selectedNode.id}`, type: 'Roadmap', title: `${domainData.title}: ${selectedNode.label}` }}
+              style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 20 }}
+            />
 
             <div className="panel-inner-scroll">
               {/* Header */}
