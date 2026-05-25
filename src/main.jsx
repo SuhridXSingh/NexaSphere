@@ -4,7 +4,8 @@ import App from './App.jsx';
 import GlobalErrorBoundary from './components/GlobalErrorBoundary.jsx';
 import { ThemeProvider } from './context/theme/ThemeProvider.tsx';
 import { registerSW } from 'virtual:pwa-register';
-import { SocketProvider } from './context/SocketContext';
+import { HelmetProvider } from 'react-helmet-async';
+
 
 
 
@@ -13,11 +14,11 @@ registerSW({ immediate: true });
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider>
+    <HelmetProvider>
       <GlobalErrorBoundary>
         <App />
       </GlobalErrorBoundary>
-    </ThemeProvider>
+    </HelmetProvider>
   </StrictMode>
 );
 
